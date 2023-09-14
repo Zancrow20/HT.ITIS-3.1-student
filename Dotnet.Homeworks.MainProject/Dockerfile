@@ -5,14 +5,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Dotnet.Homeworks.MainProject/Dotnet.Homeworks.MainProject.csproj", "Dotnet.Homeworks.MainProject/"]
-RUN dotnet restore "Dotnet.Homeworks.MainProject/Dotnet.Homeworks.MainProject.csproj"
-COPY . .
-WORKDIR "/src/Dotnet.Homeworks.MainProject"
-RUN dotnet build "Dotnet.Homeworks.MainProject.csproj" -c Release -o /app/build
+COPY Dotnet.Homeworks.MainProject/Dotnet.Homeworks.MainProject.csproj Dotnet.Homeworks.MainProject/
+RUN dotnet restore Dotnet.Homeworks.MainProject/Dotnet.Homeworks.MainProject.csproj
+COPY . /src
+WORKDIR /src/Dotnet.Homeworks.MainProject
+RUN dotnet build Dotnet.Homeworks.MainProject.csproj -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Dotnet.Homeworks.MainProject.csproj" -c Release -o /app/publish
+RUN dotnet publish Dotnet.Homeworks.MainProject.csproj -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
