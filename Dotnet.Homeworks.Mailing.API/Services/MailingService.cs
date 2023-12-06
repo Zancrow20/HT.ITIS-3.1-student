@@ -19,7 +19,9 @@ public class MailingService : IMailingService
 
     public async Task<Result> SendEmailAsync(EmailMessage emailDto)
     {
-        using var message = new MimeMessage();
+        Console.WriteLine(emailDto.Content);
+        return new Result(true);
+        /*using var message = new MimeMessage();
         message.From.Add(new MailboxAddress("Testing mailing api", _emailConfig.Email));
         message.To.Add(new MailboxAddress(emailDto.Email, emailDto.Email));
         message.Subject = emailDto.Subject ?? "";
@@ -28,7 +30,10 @@ public class MailingService : IMailingService
             TextBody = $"Your message: {emailDto.Content}"
         };
         message.Body = bodyBuilder.ToMessageBody();
-        using var client = new SmtpClient();
+        using var client = new SmtpClient
+        {
+            CheckCertificateRevocation = false
+        };
         try
         {
             await client.ConnectAsync(_emailConfig.Host, _emailConfig.Port, SecureSocketOptions.StartTls);
@@ -40,6 +45,6 @@ public class MailingService : IMailingService
         catch (Exception ex)
         {
             return new Result(false, $"Error while sending email: {ex.Message}");
-        }
+        }*/
     }
 }
