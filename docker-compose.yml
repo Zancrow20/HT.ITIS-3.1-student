@@ -15,7 +15,7 @@ services:
       RabbitMqConfig__Username: rmuser
       RabbitMqConfig__Password: rmpassword
       RabbitMqConfig__Hostname: amqp://rabbitmq:5672
-      ConnectionStrings__Default : Host=localhost;Database=dotnet_postgres_db;Port=5432;Username=superCoolUserName;Password=superCoolUserPassword138 
+      ConnectionStrings__Default : Host=dotnet_postgres;Port=5432;Database=dotnet_postgres_db;Username=superCoolUserName;Password=superCoolUserPassword138
         
   dotnet_postgres:
     image: postgres:alpine
