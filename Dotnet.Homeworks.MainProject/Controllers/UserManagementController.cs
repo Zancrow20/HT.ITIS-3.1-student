@@ -1,6 +1,12 @@
 ﻿using Dotnet.Homeworks.Domain.Entities;
+using Dotnet.Homeworks.Features.UserManagement.Commands.DeleteUserByAdmin;
+using Dotnet.Homeworks.Features.UserManagement.Queries.GetAllUsers;
+using Dotnet.Homeworks.Features.Users.Commands.CreateUser;
+using Dotnet.Homeworks.Features.Users.Commands.DeleteUser;
+using Dotnet.Homeworks.Features.Users.Commands.UpdateUser;
+using Dotnet.Homeworks.Features.Users.Queries.GetUser;
 using Dotnet.Homeworks.MainProject.Dto;
-using Dotnet.Homeworks.MainProject.Services;
+using Dotnet.Homeworks.Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dotnet.Homeworks.MainProject.Controllers;
@@ -8,47 +14,76 @@ namespace Dotnet.Homeworks.MainProject.Controllers;
 [ApiController]
 public class UserManagementController : ControllerBase
 {
-    private readonly IRegistrationService _registrationService;
+    private readonly IMediator _mediator;
 
-    public UserManagementController(IRegistrationService registrationService)
+    public UserManagementController(IMediator mediator)
     {
-        _registrationService = registrationService;
+        _mediator = mediator;
     }
 
     [HttpPost("user")]
     public async Task<IActionResult> CreateUserAsync(RegisterUserDto userDto, CancellationToken cancellationToken)
     {
-        await _registrationService.RegisterAsync(userDto);
-        return Ok();
+        var command = new CreateUserCommand(userDto.Name, userDto.Email);
+        var res = await _mediator.Send(command, cancellationToken);
+        
+        return res.IsSuccess
+            ? Ok(res.Value)
+            : BadRequest(res.Error);
     }
 
     [HttpGet("profile/{guid}")]
-    public Task<IActionResult> GetProfile(Guid guid, CancellationToken cancellationToken) 
+    public async Task<IActionResult> GetProfile(Guid guid, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var query = new GetUserQuery(guid);
+        var res = await _mediator.Send(query, cancellationToken);
+        
+        return res.IsSuccess
+            ? Ok(res.Value)
+            : BadRequest(res.Error);
     }
 
     [HttpGet("users")]
-    public Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllUsers(CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var query = new GetAllUsersQuery();
+        var res = await _mediator.Send(query, cancellationToken);
+        
+        return res.IsSuccess
+            ? Ok(res.Value)
+            : BadRequest(res.Error);
     }
 
     [HttpDelete("profile/{guid:guid}")]
-    public Task<IActionResult> DeleteProfile(Guid guid, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteProfile(Guid guid, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var command = new DeleteUserCommand(guid);
+        var res = await _mediator.Send(command, cancellationToken);
+        
+        return res.IsSuccess
+            ? Ok()
+            : BadRequest(res.Error);
     }
 
     [HttpPut("profile")]
-    public Task<IActionResult> UpdateProfile(User user, CancellationToken cancellationToken)
+    public async Task<IActionResult> UpdateProfile(User user, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var command = new UpdateUserCommand(user);
+        var res = await _mediator.Send(command, cancellationToken);
+        
+        return res.IsSuccess
+            ? Ok()
+            : BadRequest(res.Error);
     }
 
     [HttpDelete("user/{guid:guid}")]
-    public Task<IActionResult> DeleteUser(Guid guid, CancellationToken cancellationToken)
+    public async Task<IActionResult> DeleteUser(Guid guid, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        var command = new DeleteUserByAdminCommand(guid);
+        var res = await _mediator.Send(command, cancellationToken);
+        
+        return res.IsSuccess
+            ? Ok()
+            : BadRequest(res.Error);
     }
 }
