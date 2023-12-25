@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Dotnet.Homeworks.Mediator.DI.Mediatr;
 
@@ -30,10 +29,7 @@ public partial class Mediator
                 continue;
             }
 
-            //var genericArguments = requestHandlerType.GetInterface(requestInterfaceType.Name)?.GetGenericArguments();
-            //var genericRequestInterfaceType = requestInterfaceType.MakeGenericType(genericArguments![0], genericArguments[1]);
-            
-            serviceCollection.TryAddTransient(requestInterfaceType, requestHandlerType);
+            serviceCollection.AddTransient(requestInterfaceType, requestHandlerType);
         }
     }
 

@@ -35,7 +35,7 @@ public class CreateUserValidator : AbstractValidator<CreateUserCommand>
 
     private async Task<bool> BeUnique(string email, CancellationToken cancellationToken = default)
     {
-        var users = await _userRepository.GetUsersAsync(cancellationToken);
+        var users = (await _userRepository.GetUsersAsync(cancellationToken)).ToList();
         var result = users.FirstOrDefault(x => x.Email == email);
         return result is null;
     }

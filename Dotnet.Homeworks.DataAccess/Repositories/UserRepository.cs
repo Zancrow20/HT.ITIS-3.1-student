@@ -19,9 +19,10 @@ public class UserRepository : IUserRepository
         return Task.FromResult(_dbContext.Set<User>().AsQueryable());
     }
 
-    public Task<User?> GetUserByGuidAsync(Guid guid, CancellationToken cancellationToken)
+    public async Task<User?> GetUserByGuidAsync(Guid guid, CancellationToken cancellationToken)
     {
-        return Task.FromResult(_dbContext.Set<User>().FirstOrDefault(u => u.Id == guid));
+        return await _dbContext.Set<User>()
+            .FirstOrDefaultAsync(u => u.Id == guid, cancellationToken: cancellationToken);
     }
 
     public async Task DeleteUserByGuidAsync(Guid guid, CancellationToken cancellationToken)

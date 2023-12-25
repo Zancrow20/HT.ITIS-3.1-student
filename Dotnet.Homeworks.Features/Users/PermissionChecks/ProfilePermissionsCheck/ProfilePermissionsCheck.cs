@@ -8,23 +8,24 @@ namespace Dotnet.Homeworks.Features.Users.PermissionChecks.ProfilePermissionsChe
 
 public class ProfilePermissionsCheck : IPermissionCheck<IClientRequest>
 {
-    private readonly HttpContext? _context;
+    private readonly IHttpContextAccessor _contextAccessor;
 
     public ProfilePermissionsCheck(IHttpContextAccessor contextAccessor)
     {
-        _context = contextAccessor.HttpContext;
+        _contextAccessor = contextAccessor;
     }
     
     public Task<PermissionResult> CheckPermissionAsync(IClientRequest request)
     {
-        var user = _context!.User;
+        var context = _contextAccessor.HttpContext;
+        var user = context!.User;
         var guidClaim = user.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
         if (guidClaim == null)
             return Task.FromResult(new PermissionResult(false, "Doesn't have guid!"));
         var guid = Guid.Parse(guidClaim.Value);
 
-        return guid == request.Guid ? 
-            Task.FromResult(new PermissionResult(true)) : 
-            Task.FromResult(new PermissionResult(false, "Access denied"));
+        return Task.FromResult(guid == request.Guid ? 
+            new PermissionResult(true) : 
+            new PermissionResult(false, "Access denied"));
     }
 }

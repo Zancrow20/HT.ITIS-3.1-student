@@ -6,7 +6,7 @@ namespace Dotnet.Homeworks.Mediator.DI.Mediatr;
 public partial class Mediator : IMediator
 {
     private readonly IServiceProvider _serviceProvider;
-    private static readonly ConcurrentDictionary<Type, object?> RequestHandlers = new();
+    private static readonly ConcurrentDictionary<Type, Type?> RequestHandlers = new();
     public Mediator(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
@@ -18,12 +18,13 @@ public partial class Mediator : IMediator
         if (request is null) throw new ArgumentNullException(nameof(request)); 
         var requestType = request.GetType();
         
-        var handler = RequestHandlers.GetOrAdd(requestType, reqType =>
+        var handlerType = RequestHandlers.GetOrAdd(requestType, reqType =>
         {
             var handlerType = typeof(IRequestHandler<,>).MakeGenericType(reqType, typeof(TResponse));
-            var reqHandler = _serviceProvider.GetService(handlerType)!;
-            return reqHandler;
+            return handlerType;
         });
+        
+        var handler = _serviceProvider.GetService(handlerType!)!;
         
         if (handler == null)
             throw new ArgumentNullException($"There is no any handler registered for {requestType.Name}");
@@ -47,14 +48,16 @@ public partial class Mediator : IMediator
     {
         if (request is null) throw new ArgumentNullException(nameof(request));
 
-        var requestType = typeof(TRequest);
+        var requestType = request.GetType();
         
-        var handler = RequestHandlers.GetOrAdd(requestType, _ =>
+        var handlerType = RequestHandlers.GetOrAdd(requestType, reqType =>
         {
-            var reqHandler = _serviceProvider.GetService<IRequestHandler<TRequest>>()!;
-            return reqHandler;
+            var handlerType = typeof(IRequestHandler<>).MakeGenericType(reqType);
+            return handlerType;
         });
         
+        var handler = _serviceProvider.GetService(handlerType!)!;
+
         if (handler is null)
             throw new ArgumentNullException($"There is no any handler registered for {requestType.Name}");
         

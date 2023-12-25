@@ -6,7 +6,7 @@ using FluentValidation;
 namespace Dotnet.Homeworks.Features.Users.Decorators;
 
 public class CqrsDecorator<TRequest, TResponse> : 
-    ValidationDecorator<TRequest, TResponse> where TRequest : IRequest<TResponse>
+    PermissionCheckDecorator<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
     protected CqrsDecorator(IPermissionCheck<IClientRequest> permissionCheck,
         IEnumerable<IValidator<TRequest>> validators) : base(permissionCheck, validators)

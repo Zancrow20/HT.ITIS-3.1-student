@@ -4,20 +4,17 @@ using Dotnet.Homeworks.Infrastructure.Validation.PermissionChecker.DependencyInj
 using Dotnet.Homeworks.Mediator;
 using Dotnet.Homeworks.Mediator.DependencyInjectionExtensions;
 using FluentValidation;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Dotnet.Homeworks.Features;
+namespace Dotnet.Homeworks.MainProject.ServicesExtensions.СQRSValidation;
 
 public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddFeaturesServices(this IServiceCollection services)
-    {   
-        services.AddMediator(AssemblyReference.Assembly);
-        services.AddTransient(typeof(IPipelineBehavior<,>), typeof(PermissionPipelineBehavior<,>));
-
-        services.AddPermissionChecks(AssemblyReference.Assembly);
-
-        services.AddValidatorsFromAssembly(AssemblyReference.Assembly);
+    {
+        services.AddMediator(AssemblyReference.Assembly)
+            .AddTransient(typeof(IPipelineBehavior<,>), typeof(PermissionPipelineBehavior<,>))
+            .AddValidatorsFromAssembly(AssemblyReference.Assembly)
+            .AddPermissionChecks(AssemblyReference.Assembly);
         return services;
     }
 }
