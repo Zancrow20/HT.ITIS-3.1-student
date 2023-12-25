@@ -17,7 +17,6 @@ builder.Configuration.GetSection("RabbitMqConfig").Bind(rabbitMqConfig);
 
 builder.Services
     .AddMasstransitRabbitMq(rabbitMqConfig)
-    .AddMediatr()
     .AddApplicationServices(builder.Configuration)
     .AddHostedService<DbContextMigration>();
 

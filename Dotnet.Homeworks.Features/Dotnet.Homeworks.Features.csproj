@@ -13,8 +13,14 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Dotnet.Homeworks.DataAccess\Dotnet.Homeworks.DataAccess.csproj" />
       <ProjectReference Include="..\Dotnet.Homeworks.Domain\Dotnet.Homeworks.Domain.csproj" />
       <ProjectReference Include="..\Dotnet.Homeworks.Infrastructure\Dotnet.Homeworks.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="11.9.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
     </ItemGroup>
 
 </Project>
